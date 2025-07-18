@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pet Store - Pets</title>
+    <style>
+        body {
+            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+            background: #f7f9fb;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            padding: 32px 40px 40px 40px;
+        }
+        h1, h2 {
+            font-weight: 600;
+            color: #222;
+            margin-bottom: 16px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 32px;
+            background: #fafbfc;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+        th, td {
+            border: none;
+            padding: 14px 12px;
+            text-align: left;
+        }
+        th {
+            background: #f0f4f8;
+            color: #333;
+            font-size: 1rem;
+            letter-spacing: 0.02em;
+        }
+        tr:nth-child(even) {
+            background: #f7f9fb;
+        }
+        tr:hover {
+            background: #e6f0fa;
+        }
+        .actions {
+            display: flex;
+            gap: 0.5em;
+        }
+        button {
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 16px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        button:hover {
+            background: #1d4ed8;
+        }
+        form {
+            margin-top: 0;
+        }
+        .add-form {
+            display: flex;
+            gap: 1em;
+            align-items: flex-end;
+            margin-top: 24px;
+        }
+        .add-form label {
+            display: flex;
+            flex-direction: column;
+            font-size: 0.98rem;
+            color: #333;
+        }
+        .add-form input[type="text"],
+        .add-form input[type="number"] {
+            padding: 7px 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 5px;
+            font-size: 1rem;
+            margin-top: 4px;
+            background: #f8fafc;
+            transition: border 0.15s;
+        }
+        .add-form input:focus {
+            border: 1.5px solid #2563eb;
+            outline: none;
+            background: #fff;
+        }
+        @media (max-width: 600px) {
+            .container { padding: 12px; }
+            table, th, td { font-size: 0.95rem; }
+            .add-form { flex-direction: column; gap: 0.5em; }
+        }
+    </style>
+    <style>
+        .pagination {
+            display: flex;
+            align-items: center;
+            gap: 0.5em;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+        .pagination button {
+            background: #e5e7eb;
+            color: #222;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 12px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .pagination button:disabled {
+            background: #f3f4f6;
+            color: #aaa;
+            cursor: not-allowed;
+        }
+        .pagination a {
+            background: #f0f4f8;
+            color: #2563eb;
+            border-radius: 5px;
+            padding: 5px 12px;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: background 0.15s;
+        }
+        .pagination a:hover {
+            background: #dbeafe;
+        }
+        .pagination .current-page {
+            background: #2563eb;
+            color: #fff;
+            border-radius: 5px;
+            padding: 5px 12px;
+            font-weight: bold;
+        }
+        .pagination span {
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Pet Store</h1>
+        <h2>Pets</h2>
+        <table>
+            <tr>
+                <th>ID</th><th>Name</th><th>Species</th><th>Age</th><th>Actions</th>
+            </tr>
+            {% for pet in pets %}
+            <tr>
+                <td>{{ pet.id }}</td>
+                <td>{{ pet.name }}</td>
+                <td>{{ pet.species }}</td>
+                <td>{{ pet.age }}</td>
+                <td class="actions">
+                    <form action="{{ url_for('edit_pet', pet_id=pet.id) }}" method="get" style="display:inline;">
+                        <button type="submit">Edit</button>
+                    </form>
+                    <form action="{{ url_for('delete_pet', pet_id=pet.id) }}" method="post" style="display:inline;">
+                        <button type="submit" onclick="return confirm('Delete this pet?');" style="background:#ef4444;">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <div class="pagination">
+            <form method="get" style="display:inline;">
+                <input type="hidden" name="per_page" value="{{ per_page }}">
+                <button type="submit" name="page" value="{{ page-1 }}" {% if page <= 1 %}disabled{% endif %}>&laquo; Prev</button>
+            </form>
+            {% for p in range(1, total_pages+1) %}
+                {% if p == page %}
+                    <span class="current-page">{{ p }}</span>
+                {% elif p <= 2 or p > total_pages-2 or (p >= page-2 and p <= page+2) %}
+                    <a href="{{ url_for('index') }}?page={{ p }}&per_page={{ per_page }}">{{ p }}</a>
+                {% elif p == 3 and page > 5 %}
+                    <span>...</span>
+                {% elif p == total_pages-2 and page < total_pages-4 %}
+                    <span>...</span>
+                {% endif %}
+            {% endfor %}
+            <form method="get" style="display:inline;">
+                <input type="hidden" name="per_page" value="{{ per_page }}">
+                <button type="submit" name="page" value="{{ page+1 }}" {% if page >= total_pages %}disabled{% endif %}>Next &raquo;</button>
+            </form>
+            <span style="margin-left:1em; color:#666;">Page {{ page }} of {{ total_pages }}</span>
+        </div>
+
+        <h2>Add Pet</h2>
+        <form class="add-form" action="{{ url_for('add_pet') }}" method="post">
+            <label>Name
+                <input type="text" name="name" required>
+            </label>
+            <label>Species
+                <input type="text" name="species" required>
+            </label>
+            <label>Age
+                <input type="number" name="age" min="0" required>
+            </label>
+            <button type="submit">Add</button>
+        </form>
+    </div>
+</body>
+</html>
