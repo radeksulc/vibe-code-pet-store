@@ -2,6 +2,10 @@
 
 This app is a result of vibe coding with zero coding performed by the user.
 
+What was used to create the code:
+* Content of this markdown file
+* Additional instructions added during the interactive Cline task, incl. interactions with GitHub.
+
 # Project description
 This project is an implementation of management of data about pets stored in a database using web app with web user interface.
 
