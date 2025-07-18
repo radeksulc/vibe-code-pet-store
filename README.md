@@ -32,3 +32,7 @@ frontend
 backend  
 test  
 and whatever else needed
+
+## Cline Task History
+
+For a full, detailed history of the “vibe coding” interaction and project generation, see [cline-task.md](cline-task.md).
