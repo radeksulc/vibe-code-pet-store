@@ -1,6 +1,6 @@
 # Vibe Code Pet Store
 
-This app is a result of vibe coding with zero coding performed by the user.
+This app is a result of vibe coding with [Cline](https://cline.bot) and zero coding performed by the user.
 
 What was used to create the code:
 * Content of this markdown file
